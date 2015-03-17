@@ -1,9 +1,4 @@
-# Databricks Scala Guide
-
-With over 500 contributors, Spark is to the best our knowledge the largest open-source project in Big Data and the most active project written in Scala. This guide draws from our experience coaching and working with engineers contributing to Spark as well as our [Databricks](http://databricks.com/) engineering team.
-
-Code is __written once__ by its author, but __read and modified multiple times__ by lots of other engineers. As most bugs actually come from future modification of the code, we need to optimize our codebase for long-term, global readability and maintainability. The best way to achieve this is to write simple code.
-
+# FireMuzzy Scala Guide (modified from Databricks's guide and Scala's official style guide)
 
 ## <a name='TOC'>Table of Contents</a>
 
@@ -64,7 +59,7 @@ Code is __written once__ by its author, but __read and modified multiple times__
 
 ### <a name='naming'>Naming Convention</a>
 
-We mostly follow Java's and Scala's standard naming conventions.
+We follow Java's and Scala's standard naming conventions.
 
 - Classes, traits, objects should follow Java class convention, i.e. CamelCase style with the first letter capitalized.
   ```scala
@@ -75,10 +70,47 @@ We mostly follow Java's and Scala's standard naming conventions.
 
 - Packages should follow Java package naming conventions, i.e. all-lowercase ASCII letters.
   ```scala
-  package com.databricks.resourcemanager
+  //right
+  package com.novell.coolness
+  
+  // right, for package object com.novell.coolness
+  package com.novell
+  **
+   * Provides classes related to coolness
+   */
+  package object coolness {
+  }
   ```
 
 - Methods/functions should be named in camelCase style.
+  * For accessors of properties, the name of the method should be the name of the property.
+  * For mutators, the name of the method should be the name of the property with “_=” appended. As long as a corresponding accessor with that particular property name is defined on the enclosing type, this convention will enable a call-site mutation syntax which mirrors assignment. Note that this is not just a convention but a requirement of the language.
+  ```scala
+  class Foo {
+    def bar = ...
+    def bar_=(bar: Bar) {
+      ...
+    }
+      def isBaz = ...
+  }
+  
+  val foo = new Foo
+  foo.bar             // accessor
+  foo.bar = bar2      // mutator
+  foo.isBaz           // boolean property
+  ```
+  * In Scala, there is no distinction between fields and methods. In fact, fields are completely named and controlled by the compiler. If we wanted to adopt the Java convention of bean getters/setters in Scala, this is a rather simple encoding:
+  ```scala
+  class Company {
+    private var _name: String = _
+    
+    def name = _name
+    
+    def name_=(name: String) {
+      _name = name
+    }
+  }
+  ```
 
 - Constants should be all uppercase letters and be put in a companion object
   ```scala
